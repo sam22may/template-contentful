@@ -25,14 +25,23 @@ export const getStaticPaths = async () => {
 }
 
 export async function getStaticProps ({ params }){
-	const res = await client.getEntries({
+	const { items } = await client.getEntries({
 		content_type: 'blog',
 		'fields.slug': params.slug
 	})
 
+	if(!items.length) {
+		return {
+			redirect: {
+				destination: '/',
+				permanent: false
+			}
+		}
+	}
+
 	return {
 		props: {
-			article: res.items[0]
+			article: items[0]
 		}, 
 		revalidate: 1
 	}
