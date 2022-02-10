@@ -2,6 +2,7 @@ import { createClient } from 'contentful'
 import Image from 'next/image'
 import Link from 'next/link'
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
+import Skeleton from '../../components/Skeleton'
 
 const client = createClient({
 	space: process.env.CONTENTFUL_SPACE_ID,
@@ -17,7 +18,10 @@ export const getStaticPaths = async () => {
 		params: { slug: i.fields.slug }
 	}))
 
-	return { paths, fallback: false }
+	return { 
+		paths, 
+		fallback: true
+	}
 }
 
 export async function getStaticProps ({ params }){
@@ -35,6 +39,9 @@ export async function getStaticProps ({ params }){
 }
 
 export default function ArticleDetails ({ article }){
+
+	if (!article) return <Skeleton />
+
 	const { title, featuredImage, category, text } = article.fields
 
 	console.log(article)
